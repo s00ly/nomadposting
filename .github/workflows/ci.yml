@@ -26,6 +26,10 @@ jobs:
       - name: Verify module checksums
         run: go mod verify
 
+      - name: Check dependency licenses
+        timeout-minutes: 5
+        run: bash ./scripts/check-licenses.sh
+
       - name: Reject unformatted Go
         run: test -z "$(gofmt -l ./cmd ./internal)"
 
