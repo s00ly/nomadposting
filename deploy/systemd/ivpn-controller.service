@@ -1,0 +1,38 @@
+[Unit]
+Description=iVPN private cross-post controller
+Documentation=file:///usr/local/share/doc/ivpn/DEPLOYMENT.md
+Requires=ivpn-netbroker.service
+After=network-online.target ivpn-netbroker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ivpn
+Group=ivpn
+UMask=0077
+EnvironmentFile=-/etc/ivpn/controller.env
+ExecStart=/usr/local/bin/ivpn-controller
+Restart=on-failure
+RestartSec=5s
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictNamespaces=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@mount @raw-io @reboot @swap @privileged @resources
+ReadWritePaths=/var/lib/ivpn
+
+[Install]
+WantedBy=multi-user.target

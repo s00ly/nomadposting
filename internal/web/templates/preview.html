@@ -1,0 +1,29 @@
+{{define "preview"}}
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Exact approval // iVPN</title><link rel="stylesheet" href="/assets/style.css"><script src="/assets/app.js" defer></script></head>
+<body>
+<main class="auth-shell" id="main">
+  <a href="/" class="eyebrow">← Control plane</a>
+  <section class="panel" style="margin-top:1rem">
+    <header class="panel-header"><h2>Exact publication preview</h2><span class="status-badge status-orange">Not approved</span></header>
+    <div class="panel-body">
+      <p class="muted">This exact normalized text and destination set is cryptographically bound to the approval hash. No public geo field will be attached.</p>
+      <div class="preview-content">{{.Preview.Content}}</div>
+      <div class="approval-grid">
+        <div class="approval-fact"><span>Destinations</span><strong>{{if .Preview.Job.PostToX}}X {{end}}{{if .Preview.Job.PostToNostr}}Nostr{{end}}</strong></div>
+        <div class="approval-fact"><span>Configured X estimate</span><strong>{{if .Preview.Job.PostToX}}{{.Preview.XCost}}{{else}}N/A{{end}}</strong></div>
+        <div class="approval-fact"><span>Public location</span><strong>None</strong></div>
+      </div>
+      <label>Approval SHA-256</label><p class="hash mono">{{.Preview.Hash}}</p>
+      <form action="/drafts/{{.Preview.Job.ID}}/approve" method="post">
+        <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+        <input type="hidden" name="payload_hash" value="{{.Preview.Hash}}">
+        <div class="auth-actions"><button class="button-primary" type="submit">Approve exact payload</button><a class="button" href="/">Keep as draft</a></div>
+      </form>
+    </div>
+  </section>
+</main>
+</body>
+</html>
+{{end}}

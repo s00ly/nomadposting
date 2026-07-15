@@ -1,0 +1,44 @@
+name: verify
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Go
+        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
+        with:
+          go-version: '1.26.5'
+          cache-dependency-path: go.sum
+
+      - name: Verify module checksums
+        run: go mod verify
+
+      - name: Reject unformatted Go
+        run: test -z "$(gofmt -l ./cmd ./internal)"
+
+      - name: Unit, property, and race tests
+        run: go test -race -count=1 ./...
+
+      - name: Static analysis
+        run: go vet ./...
+
+      - name: Reachable vulnerability scan
+        run: go run golang.org/x/vuln/cmd/govulncheck@v1.6.0 ./...
+
+      - name: Generate module SBOM input
+        run: |
+          mkdir -p dist
+          go list -m -json all > dist/go-modules.sbom.json

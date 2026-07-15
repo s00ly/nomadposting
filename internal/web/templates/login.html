@@ -1,0 +1,27 @@
+{{define "login"}}
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Passkey gate // iVPN</title><link rel="stylesheet" href="/assets/style.css"><script src="/assets/app.js" defer></script></head>
+<body>
+<main class="auth-shell">
+  <div class="brand"><span class="brand-mark">iV</span><span><strong>iVPN</strong><small>PRIVATE POSTING PLANE</small></span></div>
+  <section class="panel">
+    <header class="panel-header"><h2>{{if .HasPasskeys}}Passkey authentication{{else}}Secure bootstrap{{end}}</h2><span class="status-badge status-purple">Management plane</span></header>
+    <div class="panel-body">
+      {{if .HasPasskeys}}
+      <p class="muted">Authenticate with a registered passkey. Password and cookie-based X login are not supported.</p>
+      <button id="passkey-login" class="button-primary" type="button">Use passkey</button>
+      <div class="field" style="margin-top:1rem"><label for="recovery-code-input">Offline recovery code</label><input id="recovery-code-input" type="password" autocomplete="one-time-code"></div>
+      <button id="recovery-login" type="button">Use and rotate recovery code</button>
+      {{else}}
+      <p class="muted">No passkey exists. Enter the one-time bootstrap token supplied through the host secret store, then register the first passkey. A one-time offline recovery code will be shown. Production actions remain locked until two passkeys and recovery are enrolled.</p>
+      <div class="field"><label for="bootstrap-token">One-time bootstrap token</label><input id="bootstrap-token" type="password" autocomplete="one-time-code"></div>
+      <button id="passkey-register" class="button-primary" type="button">Register first passkey</button>
+      {{end}}
+      <p id="auth-error" class="error" role="alert" aria-live="polite"></p>
+    </div>
+  </section>
+</main>
+</body>
+</html>
+{{end}}

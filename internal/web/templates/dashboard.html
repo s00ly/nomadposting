@@ -1,0 +1,121 @@
+{{define "dashboard"}}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>iVPN // Private Cross-Poster</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <script src="/assets/app.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+<div class="shell">
+  <aside class="sidebar" aria-label="Primary navigation">
+    <div class="brand"><span class="brand-mark">iV</span><span><strong>iVPN</strong><small>PRIVATE POSTING PLANE</small></span></div>
+    <nav class="nav">
+      <a href="#compose" aria-current="page">01 / Compose</a>
+      <a href="#egress">02 / Egress</a>
+      <a href="#jobs">03 / Jobs</a>
+      <a href="#audit">04 / Audit</a>
+    </nav>
+    <div class="sidebar-foot">
+      <span class="mode-badge status-orange">{{if .DryRun}}Dry run{{else}}Live armed{{end}}</span>
+      <p class="muted mono" style="font-size:.62rem;line-height:1.5">VPN routing changes source IP, not account identity. No public location claims.</p>
+    </div>
+  </aside>
+
+  <main class="main" id="main">
+    <header class="topbar">
+      <div><span class="eyebrow">Control plane / single tenant</span><h1>Cross-post without leaking the route.</h1></div>
+      <span class="status-badge {{if .System.EmergencyStop}}status-orange{{else}}status-purple{{end}}">{{if .System.EmergencyStop}}Emergency stop{{else}}System ready{{end}}</span>
+    </header>
+
+    {{if .Flash}}<div class="notice" role="status"><strong>{{.Flash}}</strong></div>{{end}}
+    {{if .System.EmergencyStop}}<div class="notice" role="alert"><strong>Publishing is stopped.</strong> {{.System.Reason}}</div>{{end}}
+
+    <section class="stats" aria-label="System overview">
+      <div class="stat"><span>Queued jobs</span><strong>{{.Queued}}</strong></div>
+      <div class="stat"><span>Resolved jobs</span><strong>{{.Resolved}}</strong></div>
+      <div class="stat"><span>Healthy countries</span><strong>{{.HealthyCountries}} / 5</strong></div>
+      <div class="stat"><span>X egress policy</span><strong style="font-size:.9rem;color:var(--purple-soft)">FR / PINNED</strong></div>
+    </section>
+
+    <div class="grid-main">
+      <div class="stack">
+        <section class="panel" id="compose" aria-labelledby="compose-title">
+          <header class="panel-header"><h2 id="compose-title">Compose encrypted draft</h2><span class="eyebrow">Exact approval required</span></header>
+          <div class="panel-body">
+            <form action="/drafts" method="post">
+              <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+              <div class="field"><label for="composer-content">Post text</label><textarea id="composer-content" name="content" maxlength="1000" required aria-describedby="composer-counter"></textarea></div>
+              <div class="field-row">
+                <div class="field"><label>Destinations</label><div class="check-row"><label class="check"><input type="checkbox" name="post_x" value="1" checked> X</label><label class="check"><input type="checkbox" name="post_nostr" value="1" checked> Nostr</label></div></div>
+                <div class="field"><label for="scheduled-at">Schedule, optional</label><input id="scheduled-at" type="datetime-local" name="scheduled_at"></div>
+              </div>
+              <div class="form-foot"><span class="counter" id="composer-counter">0 code points</span><button class="button-primary" type="submit" {{if .System.EmergencyStop}}disabled{{end}}>Encrypt &amp; preview</button></div>
+            </form>
+          </div>
+        </section>
+
+        <section class="panel" id="egress" aria-labelledby="egress-title">
+          <header class="panel-header"><h2 id="egress-title">Egress health</h2><span class="eyebrow">No exit IPs logged</span></header>
+          <div class="panel-body endpoint-grid">
+            {{range .Countries}}<div class="endpoint"><strong>{{.Code}}</strong><span>{{.Name}}</span><span class="health">{{.Status}}</span></div>{{end}}
+          </div>
+        </section>
+
+        <section class="panel" id="jobs" aria-labelledby="jobs-title">
+          <header class="panel-header"><h2 id="jobs-title">Job timeline</h2><span class="eyebrow">Independent platform receipts</span></header>
+          <div class="panel-body timeline">
+            {{if not .Jobs}}<p class="muted">No encrypted drafts yet.</p>{{end}}
+            {{range .Jobs}}
+            <article class="job">
+              <div class="job-head"><span class="job-id">{{.ID}}</span><span class="status-badge {{stateClass .State}}">{{.State}}</span></div>
+              <div class="job-meta"><span>{{.CreatedAt.Format "2006-01-02 15:04 UTC"}}</span>{{if .PostToX}}<span>[X]</span>{{end}}{{if .PostToNostr}}<span>[NOSTR]</span>{{end}}{{if .ContentDestroyed}}<span>[CONTENT ERASED]</span>{{end}}</div>
+              {{range .Receipts}}<div class="receipt {{if eq .State "FAILED"}}receipt-error{{end}}"><strong>{{.Platform}} / {{.State}}</strong>{{if .CountryCode}} · country {{.CountryCode}}{{end}}{{if .ExternalID}} · id {{.ExternalID}}{{end}}{{if .SafeError}}<br>{{.SafeError}}{{end}}</div>{{end}}
+              <div class="job-actions">
+                {{if eq .State "DRAFT"}}<a class="button button-purple" href="/drafts/{{.ID}}/preview">Review</a>{{end}}
+                {{if or (eq .State "DRAFT") (eq .State "APPROVED")}}<form action="/jobs/{{.ID}}/cancel" method="post" data-confirm="Cancel this job?"><input type="hidden" name="csrf_token" value="{{$.CSRFToken}}"><button type="submit">Cancel</button></form>{{end}}
+                {{if or (eq .State "UNKNOWN") (eq .State "PARTIAL")}}<form action="/jobs/{{.ID}}/reconcile" method="post"><input type="hidden" name="csrf_token" value="{{$.CSRFToken}}"><button type="submit">Reconcile</button></form>{{end}}
+              </div>
+            </article>
+            {{end}}
+          </div>
+        </section>
+      </div>
+
+      <div class="stack">
+        <section class="panel" aria-labelledby="connections-title">
+          <header class="panel-header"><h2 id="connections-title">Connections</h2></header>
+          <div class="panel-body timeline">
+            <div class="job"><div class="job-head"><span>X API</span><span class="status-badge status-neutral">{{.XStatus}}</span></div><p class="muted mono" style="font-size:.68rem">OAuth 2.0 PKCE · geo omitted · France exit pinned</p>{{if .XOAuthAvailable}}{{if eq .XStatus "CONNECTED"}}<form action="/connections/x/revoke" method="post" data-confirm="Revoke X access?"><input type="hidden" name="csrf_token" value="{{.CSRFToken}}"><button type="submit">Revoke X access</button></form>{{else}}<a class="button button-purple" href="/oauth/x/start">Connect X</a>{{end}}{{end}}</div>
+            <div class="job"><div class="job-head"><span>Nostr signer</span><span class="status-badge status-neutral">{{.NostrStatus}}</span></div><p class="muted mono" style="font-size:.68rem">NIP-46 only · no nsec custody · kind 1 grant</p></div>
+            {{if lt .PasskeyCount 2}}<div class="job"><div class="job-head"><span>Backup passkey</span><span class="status-badge status-orange">Required</span></div><p class="muted mono" style="font-size:.68rem">Production controls unlock after two passkeys and offline recovery are enrolled.</p><button id="passkey-register" class="button-purple" type="button">Register backup passkey</button><p id="auth-error" class="error" role="alert" aria-live="polite"></p></div>{{end}}
+            <div class="job"><div class="job-head"><span>Offline recovery</span><span class="status-badge status-purple">One-time</span></div><p class="muted mono" style="font-size:.68rem">Rotating invalidates the previous code. Store the replacement offline.</p><button id="recovery-rotate" data-csrf="{{.CSRFToken}}" type="button">Rotate recovery code</button></div>
+          </div>
+        </section>
+
+        <section class="panel" id="audit" aria-labelledby="audit-title">
+          <header class="panel-header"><h2 id="audit-title">Encrypted audit</h2><span class="eyebrow">7-day exact retention</span></header>
+          <div class="panel-body"><ol class="audit">{{range .Audit}}<li><time>{{.CreatedAt.Format "01-02 15:04:05"}}</time><div><strong>{{.Kind}}</strong><span>{{.Detail}}</span></div></li>{{else}}<li><span class="muted">No events.</span></li>{{end}}</ol></div>
+        </section>
+
+        <section class="panel" aria-labelledby="stop-title">
+          <header class="panel-header"><h2 id="stop-title">Emergency control</h2></header>
+          <div class="panel-body">
+            <p class="muted">Stops approvals and dispatch. It never bypasses a tunnel or retries an unknown post.</p>
+            <form action="/system/emergency-stop" method="post" data-confirm="Change the system emergency-stop state?">
+              <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+              <input type="hidden" name="enabled" value="{{if .System.EmergencyStop}}0{{else}}1{{end}}">
+              <button type="submit" class="button-danger">{{if .System.EmergencyStop}}Clear emergency stop{{else}}Activate emergency stop{{end}}</button>
+            </form>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>
+{{end}}

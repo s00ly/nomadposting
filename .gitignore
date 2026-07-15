@@ -1,0 +1,26 @@
+# Build output
+/bin/
+/dist/
+/.tools/
+*.exe
+*.test
+
+# Runtime state and secrets
+/data/
+*.db
+*.db-shm
+*.db-wal
+*.key
+.env
+
+# Infrastructure state
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

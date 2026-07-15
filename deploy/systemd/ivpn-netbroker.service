@@ -1,0 +1,42 @@
+[Unit]
+Description=iVPN fail-closed network broker
+Documentation=file:///usr/local/share/doc/ivpn/DEPLOYMENT.md
+After=local-fs.target
+Before=ivpn-controller.service
+
+[Service]
+Type=simple
+User=root
+Group=ivpn
+UMask=0007
+RuntimeDirectory=ivpn
+RuntimeDirectoryMode=0750
+ExecStart=/usr/local/libexec/ivpn-netbroker -mode=serve
+Restart=on-failure
+RestartSec=5s
+
+# The current broker is a disabled safety stub. Do not add CAP_NET_ADMIN or
+# CAP_SYS_ADMIN until the namespace implementation passes packet-capture review.
+NoNewPrivileges=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+RestrictAddressFamilies=AF_UNIX
+RestrictNamespaces=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@mount @raw-io @reboot @swap @privileged @resources
+
+[Install]
+WantedBy=multi-user.target
