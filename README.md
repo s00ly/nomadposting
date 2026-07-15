@@ -8,7 +8,7 @@
 
 Proof-oriented cross-posting research for Nostr and X, written in Go.
 
-[Threat model](docs/THREAT_MODEL.md) · [Security policy](docs/SECURITY.md) · [Verification record](docs/VERIFICATION.md) · [Deployment boundary](deploy/DEPLOYMENT.md)
+[Threat model](docs/THREAT_MODEL.md) · [Security policy](docs/SECURITY.md) · [Verification record](docs/VERIFICATION.md) · [Deployment boundary](deploy/DEPLOYMENT.md) · [Contributing](CONTRIBUTING.md)
 
 </div>
 
@@ -183,12 +183,21 @@ No production release exists. Reports against `main` are accepted. Read the [sec
 - [Threat model](docs/THREAT_MODEL.md): assets, actors, trust boundaries, abuse cases, and adversarial rounds
 - [Security policy](docs/SECURITY.md): normative controls, secret handling, logging, retention, and release gates
 - [Verification record](docs/VERIFICATION.md): passed checks, known findings, and explicit NO-GO decisions
+- [Dependency license review](docs/DEPENDENCY_LICENSES.md): transitive license evidence and scanner decision record
 - [Deployment boundary](deploy/DEPLOYMENT.md): disabled broker and Linux release gate
 - [Architecture decisions](docs/adr): product boundary, location ethics, and retention
 - [Infrastructure topology](infra/README.md): credential-free OpenTofu manifest, not provisioned infrastructure
 
-## License status
+## License and contributions
 
-No license has been selected yet. The source is public for inspection, but this repository is **not legally open source** until an OSI-approved license grants permission to use, modify, and redistribute it. Please open design reviews and test proposals, but avoid code contributions that create authorship ambiguity until the licensing decision is recorded.
+NomadPosting is licensed under the [GNU Affero General Public License,
+version 3 or later](LICENSE), identified by SPDX as `AGPL-3.0-or-later`.
+Modified versions used to provide network interaction must offer their
+corresponding source to those users as required by the license.
+
+Contributions use the same license and the [Developer Certificate of Origin
+1.1](DCO). Every commit requires an author-matching `Signed-off-by:` trailer.
+The project requires neither a CLA nor copyright assignment. See
+[CONTRIBUTING.md](CONTRIBUTING.md) before submitting changes.
 
 If this threat model matters to you, star the repository so more privacy and security reviewers can find the work.

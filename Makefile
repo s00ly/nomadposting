@@ -1,4 +1,4 @@
-.PHONY: build test vet format-check vuln sbom verify
+.PHONY: build test vet format-check license vuln sbom verify
 
 build:
 	go build -trimpath -o bin/ivpn-controller ./cmd/ivpn
@@ -13,6 +13,9 @@ vet:
 format-check:
 	@test -z "$$(gofmt -l ./cmd ./internal)"
 
+license:
+	bash ./scripts/check-licenses.sh
+
 vuln:
 	go run golang.org/x/vuln/cmd/govulncheck@v1.6.0 ./...
 
@@ -20,4 +23,4 @@ sbom:
 	mkdir -p dist
 	go list -m -json all > dist/go-modules.sbom.json
 
-verify: format-check test vet vuln sbom
+verify: format-check test vet license vuln sbom
