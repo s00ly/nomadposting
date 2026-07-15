@@ -160,7 +160,7 @@ On suspected token, signer, or VPN-key compromise:
 6. Correct the root cause, not only the exposed credential.
 7. Rerun all three adversarial rounds before restoring unattended operation.
 
-Do not place real secrets in a public issue. Until a private reporting channel is published, use the repository host's private security-advisory mechanism if available and share only redacted reproduction details.
+Do not place real secrets or exploitable details in a public issue. Use [GitHub Private Vulnerability Reporting](https://github.com/s00ly/nomadposting/security/advisories/new) and share only the minimum redacted reproduction material needed to investigate. No production release exists; reports against `main` are accepted. Public issues are appropriate for non-exploitable design questions and hardening proposals.
 
 ## Release gates
 
