@@ -1,6 +1,6 @@
 # Verification Record
 
-Date: 2026-07-14
+Date: 2026-07-15
 
 This record separates code-level evidence from production network evidence. The
 repository is a dry-run control plane and safety scaffold. It is not a working
@@ -17,7 +17,7 @@ VPN cross-poster, and live mode is deliberately rejected at configuration load.
 | Static analysis | PASS | `go vet ./...` returned no findings. |
 | Reachable vulnerability scan | PASS WITH NOTE | `govulncheck v1.6.0` found zero symbol- or package-level vulnerabilities. See dependency note below. |
 | Linux build | PASS | Both `cmd/ivpn` and `cmd/netbroker` cross-built for `linux/amd64` with `CGO_ENABLED=0` and `-trimpath`. |
-| Race detector | NOT RUN LOCALLY | This Windows environment has no CGO compiler. `go test -race` correctly failed with `-race requires cgo`. The pinned Ubuntu CI workflow is the required race gate, but no remote CI result exists yet. |
+| Race detector | PASS IN CI; NOT RUN LOCALLY | This Windows environment has no CGO compiler. `go test -race` correctly failed locally with `-race requires cgo`. The pinned Ubuntu workflow passed the race suite in [run 29382281777](https://github.com/s00ly/nomadposting/actions/runs/29382281777). |
 | OpenTofu validation | NOT RUN | OpenTofu is not installed in this environment. The infrastructure directory is a topology manifest, not resource definitions. |
 
 ## Code-level adversarial rounds
