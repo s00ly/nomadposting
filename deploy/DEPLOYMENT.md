@@ -4,7 +4,7 @@ These assets are a hardened deployment scaffold, not a production-ready VPN inst
 
 ## Current safety state
 
-- `ivpn-netbroker` recognizes only the compiled endpoint catalog.
+- `ivpn-netbroker` recognizes only the compiled endpoint catalog and rejects endpoints not dedicated to the requested platform.
 - Status and typed dry-run requests work.
 - Linux namespace and WireGuard activation is deliberately disabled.
 - The broker has no Linux capabilities and cannot create routes or namespaces.
@@ -28,7 +28,7 @@ Example dry run:
   -mode=dry-run \
   -job=deployment_check_001 \
   -platform=nostr \
-  -endpoint=aws-fr-1
+  -endpoint=gcp-fr-1
 ```
 
 ## Gate for real namespace execution

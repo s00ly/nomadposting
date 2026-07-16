@@ -50,12 +50,14 @@ func ValidateJobID(id string) error {
 
 // Endpoint is deliberately metadata-only. Network addresses, key paths, route
 // arguments, and commands belong to root-owned deployment configuration and
-// cannot cross the broker request boundary.
+// cannot cross the broker request boundary. Platform is a compiled capability,
+// not request-controlled policy.
 type Endpoint struct {
 	ID          EndpointID `json:"id"`
 	CountryCode string     `json:"country_code"`
 	Provider    string     `json:"provider"`
 	Region      string     `json:"region"`
+	Platform    Platform   `json:"platform"`
 }
 
 func (e Endpoint) Validate() error {
@@ -73,7 +75,14 @@ func (e Endpoint) Validate() error {
 	if strings.TrimSpace(e.Region) == "" || len(e.Region) > 64 {
 		return errors.New("region must be 1-64 characters")
 	}
+	if err := e.Platform.Validate(); err != nil {
+		return fmt.Errorf("endpoint platform: %w", err)
+	}
 	return nil
+}
+
+func (e Endpoint) Supports(platform Platform) bool {
+	return e.Platform == platform
 }
 
 type Health struct {
@@ -105,9 +114,10 @@ type EgressLease struct {
 }
 
 var (
-	ErrUnknownEndpoint       = errors.New("unknown endpoint")
-	ErrEndpointNotHealthy    = errors.New("endpoint is not currently healthy")
-	ErrInsufficientCountries = errors.New("fewer than the required healthy countries")
-	ErrNoEligibleAlternate   = errors.New("no eligible alternate country")
-	ErrExecutionDisabled     = errors.New("privileged namespace execution is disabled")
+	ErrUnknownEndpoint          = errors.New("unknown endpoint")
+	ErrEndpointNotHealthy       = errors.New("endpoint is not currently healthy")
+	ErrEndpointPlatformMismatch = errors.New("endpoint is not allowed for platform")
+	ErrInsufficientCountries    = errors.New("fewer than the required healthy countries")
+	ErrNoEligibleAlternate      = errors.New("no eligible alternate country")
+	ErrExecutionDisabled        = errors.New("privileged namespace execution is disabled")
 )

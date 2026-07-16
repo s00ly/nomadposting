@@ -13,11 +13,11 @@ VPN cross-poster, and live mode is deliberately rejected at configuration load.
 | Go version | PASS | Pinned Go 1.26.5 toolchain used for every command below. |
 | Project license | PASS | `LICENSE` matches the canonical GNU AGPL v3 text; the README applies `AGPL-3.0-or-later`. `DCO` matches the canonical DCO 1.1 text. Both comparisons normalized line endings only. |
 | DCO enforcement | PASS | `scripts/check-dco-tests.sh` accepted signed author and co-author fixtures; rejected unsigned authors, unsigned co-authors, unsigned post-adoption commits, and an empty range; and proved that commits predating DCO adoption are not retroactively rejected. The real branch range also passed from the DCO adoption boundary. Both pinned workflows run the self-tests. |
-| Community governance | PASS LOCALLY | Relative Markdown links resolve. Governance, maintainer, conduct, brand, contribution, ownership, issue-form, pull-request, and security-reporting policies are present and agree on the single-maintainer and dry-run boundaries. Remote GitHub detection and workflow evidence are required after push. |
+| Community governance | PASS | GitHub reports 100% community-profile health and detects the AGPL license, Code of Conduct, contributing guide, pull-request template, and README on `main`; all four issue-form files are published; private vulnerability reporting remains enabled; and post-merge [run 29497061388](https://github.com/s00ly/nomadposting/actions/runs/29497061388) passed. The CODEOWNERS errors API returned 404, so no remote parser claim is made. |
 | Dependency licenses | PASS | `bash ./scripts/check-licenses.sh` accepted only AGPL-3.0, Apache-2.0, BSD-2-Clause, BSD-3-Clause, and MIT with no ignored modules or exceptions. See [DEPENDENCY_LICENSES.md](DEPENDENCY_LICENSES.md). |
 | Formatting | PASS | `gofmt -d cmd internal` returned no diff. |
 | Module integrity | PASS | `go mod verify` returned `all modules verified`. |
-| Complete test suite | PASS | `go test -count=1 ./...` and a final `go test -count=3 ./...` passed all 10 packages. The repository contains 59 named tests. |
+| Complete test suite | PASS | `go test -count=1 ./...` and a final `go test -count=3 ./...` passed all 10 packages. The repository contains 68 named tests. |
 | Static analysis | PASS | `go vet ./...` returned no findings. |
 | Reachable vulnerability scan | PASS WITH NOTE | `govulncheck v1.6.0` found zero symbol- or package-level vulnerabilities. See dependency note below. |
 | Linux build | PASS | Both `cmd/ivpn` and `cmd/netbroker` cross-built for `linux/amd64` with `CGO_ENABLED=0` and `-trimpath`. |
@@ -32,8 +32,10 @@ packet-capture rounds required for live release.
 1. Routing and protocol boundaries: PASS
    - `go test -count=1 ./internal/egress ./cmd/netbroker ./internal/platform`
    - Covered country-uniform random selection, no adjacent repeat, stale and
-     quarantined endpoints, fixed X policy, typed broker input, ambiguous X
-     results, bounded responses, relay quorum, and signer-envelope mutation.
+     quarantined endpoints, dedicated X and Nostr endpoint capabilities,
+     privileged-boundary mismatch rejection, teardown after every prepared
+     lifecycle failure, cancellation-independent cleanup, ambiguous X results,
+     bounded responses, relay quorum, and signer-envelope mutation.
 2. Credential and disclosure boundaries: PASS
    - `go test -count=1 ./internal/secure ./internal/auth ./internal/store ./internal/web`
    - Covered AEAD context binding and tampering, WebAuthn policy, CSRF, replay,
@@ -88,7 +90,7 @@ Reassess it on every dependency update.
 
 | Severity | Gate | Current proof |
 |---|---|---|
-| HIGH | Live per-job namespace executor, WireGuard, validating DNS, nftables, UID/capability drop, teardown | Missing by design. The broker refuses execution. |
+| HIGH | Live per-job namespace executor, WireGuard, validating DNS, nftables, UID/capability drop, teardown | Partial. The broker enforces compiled per-platform endpoint capabilities and a transactional full-attempt teardown contract. The concrete Linux provisioner is still missing, the binary remains disabled, and no packet-capture evidence exists. |
 | HIGH | Packet captures proving zero fallback during every failure phase | Missing. Requires a disposable Linux test host and real tunnels. |
 | HIGH | Broker-backed dispatcher and pinned per-platform HTTP/WebSocket transports | Missing. Approved jobs remain queued; OAuth and publishing are not wired into a live worker. |
 | HIGH | Concrete NIP-46 transport, signer identity/permission enforcement, and Schnorr verification | Missing. Protocol construction and boundary tests exist only. |

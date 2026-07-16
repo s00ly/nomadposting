@@ -49,7 +49,7 @@ Out of scope:
 
 1. The private UI binds only to the management VPN, uses TLS, and requires two registered WebAuthn passkeys plus an offline recovery code. It shows exact content, destination platforms, and the absence of geotags before approval.
 2. The unprivileged controller stores the approved job. At dispatch it chooses a Nostr country using the operating system CSPRNG and chooses the registered dedicated France endpoint for X.
-3. A narrow privileged network broker creates a fresh network namespace and WireGuard interface for each platform attempt. It accepts only a validated job ID, platform, and registered endpoint ID, never content, credentials, routes, addresses, paths, or commands.
+3. A narrow privileged network broker creates a fresh network namespace and WireGuard interface for each platform attempt. It accepts only a validated job ID, platform, and registered endpoint ID; independently enforces the compiled platform capability and exact dedicated X endpoint; and never accepts content, credentials, routes, addresses, paths, or commands.
 4. The non-root posting worker receives short-lived credential handles and runs with only loopback and the selected WireGuard interface.
 5. A worker-specific resolver configuration uses only the VPN gateway resolver. IPv6 is disabled for version 1. nftables denies all other egress and blocks private, loopback, link-local, metadata, management, and peer networks.
 6. The X worker refreshes and uses X credentials only through the dedicated France exit. The Nostr worker requests a NIP-46 signature and publishes the same signed event ID to every approved relay through the selected Nostr exit.

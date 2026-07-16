@@ -28,6 +28,24 @@ func TestNostrSelectionNeverRepeatsPreviousCountry(t *testing.T) {
 	}
 }
 
+func TestNostrSelectionExcludesDedicatedXEndpoint(t *testing.T) {
+	now := time.Now().UTC()
+	registry := healthyDefaultRegistry(t, now)
+	selector, err := NewSelector(registry, DefaultSelectionPolicy())
+	if err != nil {
+		t.Fatal(err)
+	}
+	for i := 0; i < 2_000; i++ {
+		lease, selectErr := selector.Select("job_separate_001", PlatformNostr, "", now)
+		if selectErr != nil {
+			t.Fatal(selectErr)
+		}
+		if lease.EndpointID == DefaultSelectionPolicy().StableXEndpointID {
+			t.Fatalf("Nostr selected dedicated X endpoint: %+v", lease)
+		}
+	}
+}
+
 func TestNostrSelectionRequiresThreeHealthyCountries(t *testing.T) {
 	now := time.Now().UTC()
 	registry, err := NewRegistry(DefaultEndpointCatalog())
@@ -53,12 +71,12 @@ func TestNostrSelectionRequiresThreeHealthyCountries(t *testing.T) {
 
 func TestSelectionIsByCountryNotEndpointCount(t *testing.T) {
 	endpoints := []Endpoint{
-		{ID: "aws-fr-1", CountryCode: "FR", Provider: "aws", Region: "eu-west-3"},
-		{ID: "aws-fr-2", CountryCode: "FR", Provider: "aws", Region: "eu-west-3"},
-		{ID: "gcp-fr-1", CountryCode: "FR", Provider: "gcp", Region: "europe-west9"},
-		{ID: "aws-de-1", CountryCode: "DE", Provider: "aws", Region: "eu-central-1"},
-		{ID: "aws-gb-1", CountryCode: "GB", Provider: "aws", Region: "eu-west-2"},
-		{ID: "aws-se-1", CountryCode: "SE", Provider: "aws", Region: "eu-north-1"},
+		{ID: "aws-fr-1", CountryCode: "FR", Provider: "aws", Region: "eu-west-3", Platform: PlatformX},
+		{ID: "aws-fr-2", CountryCode: "FR", Provider: "aws", Region: "eu-west-3", Platform: PlatformNostr},
+		{ID: "gcp-fr-1", CountryCode: "FR", Provider: "gcp", Region: "europe-west9", Platform: PlatformNostr},
+		{ID: "aws-de-1", CountryCode: "DE", Provider: "aws", Region: "eu-central-1", Platform: PlatformNostr},
+		{ID: "aws-gb-1", CountryCode: "GB", Provider: "aws", Region: "eu-west-2", Platform: PlatformNostr},
+		{ID: "aws-se-1", CountryCode: "SE", Provider: "aws", Region: "eu-north-1", Platform: PlatformNostr},
 	}
 	now := time.Now().UTC()
 	registry, err := NewRegistry(endpoints)

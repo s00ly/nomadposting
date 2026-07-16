@@ -8,8 +8,8 @@ import (
 
 func TestRegistryRejectsUnknownAndDuplicateEndpoints(t *testing.T) {
 	_, err := NewRegistry([]Endpoint{
-		{ID: "aws-fr-1", CountryCode: "FR", Provider: "aws", Region: "eu-west-3"},
-		{ID: "aws-fr-1", CountryCode: "FR", Provider: "aws", Region: "eu-west-3"},
+		{ID: "aws-fr-1", CountryCode: "FR", Provider: "aws", Region: "eu-west-3", Platform: PlatformX},
+		{ID: "aws-fr-1", CountryCode: "FR", Provider: "aws", Region: "eu-west-3", Platform: PlatformX},
 	})
 	if err == nil {
 		t.Fatal("expected duplicate endpoint error")
@@ -22,6 +22,15 @@ func TestRegistryRejectsUnknownAndDuplicateEndpoints(t *testing.T) {
 	_, _, err = registry.Resolve("attacker-endpoint")
 	if !errors.Is(err, ErrUnknownEndpoint) {
 		t.Fatalf("expected unknown endpoint rejection, got %v", err)
+	}
+}
+
+func TestRegistryRejectsEndpointWithoutCompiledPlatform(t *testing.T) {
+	_, err := NewRegistry([]Endpoint{{
+		ID: "aws-fr-1", CountryCode: "FR", Provider: "aws", Region: "eu-west-3",
+	}})
+	if err == nil {
+		t.Fatal("expected missing endpoint platform rejection")
 	}
 }
 

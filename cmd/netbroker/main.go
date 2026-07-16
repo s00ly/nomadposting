@@ -55,7 +55,7 @@ func main() {
 	if err != nil {
 		fatal("REGISTRY_INVALID", err)
 	}
-	broker, err := egress.NewGuardedBroker(registry, egress.DisabledNamespaceExecutor{}, false, 90*time.Second)
+	broker, err := egress.NewGuardedBroker(registry, egress.DisabledNamespaceExecutor{}, false, egress.DefaultBrokerPolicy())
 	if err != nil {
 		fatal("BROKER_INVALID", err)
 	}
@@ -174,6 +174,8 @@ func errorCode(err error) string {
 	switch {
 	case errors.Is(err, egress.ErrUnknownEndpoint):
 		return "UNKNOWN_ENDPOINT"
+	case errors.Is(err, egress.ErrEndpointPlatformMismatch):
+		return "ENDPOINT_PLATFORM_MISMATCH"
 	case errors.Is(err, egress.ErrEndpointNotHealthy):
 		return "ENDPOINT_NOT_HEALTHY"
 	case errors.Is(err, egress.ErrExecutionDisabled):
@@ -187,6 +189,8 @@ func publicError(err error) string {
 	switch errorCode(err) {
 	case "UNKNOWN_ENDPOINT":
 		return "endpoint ID is not registered"
+	case "ENDPOINT_PLATFORM_MISMATCH":
+		return "endpoint is not allowed for the requested platform"
 	case "ENDPOINT_NOT_HEALTHY":
 		return "endpoint is not currently healthy"
 	case "EXECUTION_DISABLED":
