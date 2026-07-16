@@ -54,8 +54,15 @@ func NewSelector(registry *Registry, policy SelectionPolicy) (*Selector, error) 
 			return nil, fmt.Errorf("invalid allowed country code %q", country)
 		}
 	}
-	if _, _, err := registry.Resolve(policy.StableXEndpointID); err != nil {
+	stableX, _, err := registry.Resolve(policy.StableXEndpointID)
+	if err != nil {
 		return nil, fmt.Errorf("stable X endpoint: %w", err)
+	}
+	if stableX.CountryCode != "FR" {
+		return nil, fmt.Errorf("stable X endpoint must be in FR")
+	}
+	if !stableX.Supports(PlatformX) || stableX.Supports(PlatformNostr) {
+		return nil, fmt.Errorf("stable X endpoint must be dedicated to X")
 	}
 	return &Selector{registry: registry, policy: policy, random: cryptorand.Reader}, nil
 }
@@ -85,6 +92,9 @@ func (s *Selector) Select(jobID string, platform Platform, previousCountry strin
 
 	byCountry := make(map[string][]Endpoint)
 	for _, item := range s.registry.Snapshot() {
+		if !item.Endpoint.Supports(PlatformNostr) {
+			continue
+		}
 		if _, allowed := s.policy.AllowedCountries[item.Endpoint.CountryCode]; !allowed {
 			continue
 		}

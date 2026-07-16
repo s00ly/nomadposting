@@ -68,7 +68,7 @@ credentials or private operational configuration.
 - Linux is the security baseline for the first release.
 - The controller and posting worker run unprivileged.
 - A minimal broker holds only the network privileges needed to create and destroy the per-post namespace and WireGuard interface.
-- The broker accepts only validated `job_id`, `platform`, and registered `endpoint_id` values over a root-owned Unix socket. It accepts no command, path, route, arbitrary address, or shell fragment.
+- The broker accepts only validated `job_id`, `platform`, and registered `endpoint_id` values over a root-owned Unix socket. It independently enforces the compiled platform capability and exact dedicated X endpoint. It accepts no command, path, route, arbitrary address, or shell fragment.
 - Each platform attempt gets a fresh namespace containing only loopback and one WireGuard interface.
 - nftables policy is drop-by-default. No host or physical-interface route is available to the worker.
 - The worker has a private resolver configuration that uses only a resolver through the tunnel.
