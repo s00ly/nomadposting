@@ -1,0 +1,24 @@
+# Default review owner. This routes review; it does not create independence.
+* @s00ly
+
+# Repository policy and automation.
+/.github/** @s00ly
+/LICENSE @s00ly
+/DCO @s00ly
+/GOVERNANCE.md @s00ly
+/MAINTAINERS.md @s00ly
+/CODE_OF_CONDUCT.md @s00ly
+/BRAND_POLICY.md @s00ly
+
+# Security-sensitive implementation and release boundaries.
+/cmd/netbroker/** @s00ly
+/internal/auth/** @s00ly
+/internal/egress/** @s00ly
+/internal/secure/** @s00ly
+/internal/store/** @s00ly
+/deploy/** @s00ly
+/infra/** @s00ly
+/docs/SECURITY.md @s00ly
+/docs/THREAT_MODEL.md @s00ly
+/docs/VERIFICATION.md @s00ly
+/scripts/** @s00ly

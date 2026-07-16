@@ -12,6 +12,39 @@ head=$2
 git rev-parse --verify "${base}^{commit}" >/dev/null
 git rev-parse --verify "${head}^{commit}" >/dev/null
 
+if ! git merge-base --is-ancestor "$base" "$head"; then
+  echo "DCO failure: base ${base} is not an ancestor of head ${head}" >&2
+  exit 1
+fi
+
+if ! git cat-file -e "${head}:DCO" 2>/dev/null; then
+  echo "DCO failure: head ${head} does not contain the DCO policy" >&2
+  exit 1
+fi
+
+range="${base}..${head}"
+
+# A pull request that adopts the DCO cannot retroactively certify earlier
+# commits. Start enforcement at the first commit in the range that introduces
+# the DCO file. Once the base branch contains DCO, every new commit is checked.
+if ! git cat-file -e "${base}:DCO" 2>/dev/null; then
+  adoption=$(git rev-list --reverse "$range" -- DCO)
+  adoption=${adoption%%$'\n'*}
+  if [[ -z "$adoption" ]]; then
+    echo "DCO failure: no DCO adoption commit found in ${range}" >&2
+    exit 1
+  fi
+
+  adoption_parent=$(git rev-parse "${adoption}^" 2>/dev/null || true)
+  if [[ -n "$adoption_parent" ]]; then
+    range="${adoption_parent}..${head}"
+  else
+    range="$head"
+  fi
+
+  echo "DCO adoption detected at ${adoption}; earlier commits are outside the policy."
+fi
+
 failed=0
 checked=0
 
@@ -54,10 +87,10 @@ while IFS= read -r commit; do
       failed=1
     fi
   done
-done < <(git rev-list --reverse "${base}..${head}")
+done < <(git rev-list --reverse "$range")
 
 if [[ $checked -eq 0 ]]; then
-  echo "DCO failure: no commits found in ${base}..${head}" >&2
+  echo "DCO failure: no commits found in ${range}" >&2
   exit 1
 fi
 

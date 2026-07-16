@@ -17,6 +17,9 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Test DCO enforcement
+        run: bash ./scripts/check-dco-tests.sh
+
       - name: Verify DCO sign-offs
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}

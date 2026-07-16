@@ -8,7 +8,7 @@
 
 Proof-oriented cross-posting research for Nostr and X, written in Go.
 
-[Threat model](docs/THREAT_MODEL.md) · [Security policy](docs/SECURITY.md) · [Verification record](docs/VERIFICATION.md) · [Deployment boundary](deploy/DEPLOYMENT.md) · [Contributing](CONTRIBUTING.md)
+[Threat model](docs/THREAT_MODEL.md) · [Security policy](docs/SECURITY.md) · [Verification record](docs/VERIFICATION.md) · [Deployment boundary](deploy/DEPLOYMENT.md) · [Contributing](CONTRIBUTING.md) · [Governance](GOVERNANCE.md)
 
 </div>
 
@@ -187,6 +187,10 @@ No production release exists. Reports against `main` are accepted. Read the [sec
 - [Deployment boundary](deploy/DEPLOYMENT.md): disabled broker and Linux release gate
 - [Architecture decisions](docs/adr): product boundary, location ethics, and retention
 - [Infrastructure topology](infra/README.md): credential-free OpenTofu manifest, not provisioned infrastructure
+- [Governance](GOVERNANCE.md): decision, maintainer, security-authority, and succession rules
+- [Maintainers](MAINTAINERS.md): current ownership and bus-factor status
+- [Code of Conduct](CODE_OF_CONDUCT.md): community standards and private enforcement contact
+- [Name and provenance](BRAND_POLICY.md): accurate fork and official-build representation
 
 ## License and contributions
 

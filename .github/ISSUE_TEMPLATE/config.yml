@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Private vulnerability report
+    url: https://github.com/s00ly/nomadposting/security/advisories/new
+    about: Report exploitable security issues privately. Do not include secrets unless requested.
+  - name: Security policy and research boundaries
+    url: https://github.com/s00ly/nomadposting/blob/main/docs/SECURITY.md
+    about: Read the authorized-testing and disclosure requirements before reporting.

@@ -1,4 +1,4 @@
-.PHONY: build test vet format-check license vuln sbom verify
+.PHONY: build test vet format-check dco-test license vuln sbom verify
 
 build:
 	go build -trimpath -o bin/ivpn-controller ./cmd/ivpn
@@ -13,6 +13,9 @@ vet:
 format-check:
 	@test -z "$$(gofmt -l ./cmd ./internal)"
 
+dco-test:
+	bash ./scripts/check-dco-tests.sh
+
 license:
 	bash ./scripts/check-licenses.sh
 
@@ -23,4 +26,4 @@ sbom:
 	mkdir -p dist
 	go list -m -json all > dist/go-modules.sbom.json
 
-verify: format-check test vet license vuln sbom
+verify: format-check dco-test test vet license vuln sbom

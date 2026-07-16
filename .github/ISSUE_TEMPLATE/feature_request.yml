@@ -1,0 +1,52 @@
+name: Feature proposal
+description: Propose an in-scope feature with security and privacy effects.
+title: "[Feature]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        NomadPosting supports one operator, one X account through a stable France exit, one Nostr identity with approved country rotation, and official APIs only. Proposals for account fleets, browser or cookie automation, CAPTCHA handling, residential proxies, misleading location claims, platform-control circumvention, nsec storage, or blind resend are out of scope.
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope confirmation
+      options:
+        - label: This proposal stays within the documented single-account, official-API, fail-closed boundaries.
+          required: true
+        - label: This issue contains no secret, real credential, private identifier, production configuration, or exploitable detail.
+          required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Describe the user or verification problem, not only a preferred implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance evidence
+      description: Name observable behavior and reproducible proof.
+    validations:
+      required: true
+  - type: textarea
+    id: security
+    attributes:
+      label: Security and privacy impact
+      description: Name affected trust boundaries, data, credentials, egress, logs, and failure states.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives and dependencies
+      description: Compare simpler approaches and identify any proposed dependency.
+    validations:
+      required: true
+  - type: textarea
+    id: non_goals
+    attributes:
+      label: Non-goals
+      description: State what the proposal will not do or claim.
+    validations:
+      required: true
