@@ -1,0 +1,49 @@
+name: Threat-model challenge
+description: Challenge a trust boundary, abuse case, residual risk, or release proof.
+title: "[Threat model]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Public issues are for non-exploitable design review. Submit vulnerabilities privately. Do not test X, Nostr relays, VPN providers, cloud systems, accounts, or other third-party infrastructure without authorization.
+  - type: checkboxes
+    id: public_safety
+    attributes:
+      label: Public-report safety
+      options:
+        - label: This proposal contains no exploitable detail, secret, private identifier, or unauthorized third-party test result.
+          required: true
+  - type: input
+    id: document
+    attributes:
+      label: Document or code reference
+      description: Link the exact section, file, or commit.
+    validations:
+      required: true
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: Hypothesis
+      description: State the possible failure or false assumption without presenting it as confirmed.
+    validations:
+      required: true
+  - type: textarea
+    id: assets
+    attributes:
+      label: Assets and actors
+      description: Name the affected asset, attacker capability, and trust boundary.
+    validations:
+      required: true
+  - type: textarea
+    id: proof
+    attributes:
+      label: Safe proof plan
+      description: Describe a disposable, authorized test that could confirm or reject the hypothesis.
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Potential impact and fail-closed expectation
+    validations:
+      required: true

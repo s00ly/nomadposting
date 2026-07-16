@@ -1,0 +1,76 @@
+name: Dry-run bug report
+description: Report a reproducible, non-exploitable defect in the dry-run repository.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not disclose vulnerabilities, credentials, private account identifiers, production VPN configuration, sensitive packet captures, or exploit paths here. Use GitHub Private Vulnerability Reporting instead.
+  - type: checkboxes
+    id: public_safety
+    attributes:
+      label: Public-report safety
+      options:
+        - label: This report contains no secret, real credential, private identifier, production configuration, sensitive capture, or exploitable detail.
+          required: true
+        - label: I reproduced this in a disposable dry-run environment without third-party accounts or infrastructure.
+          required: true
+  - type: input
+    id: commit
+    attributes:
+      label: Commit
+      description: Exact commit SHA or branch tested.
+      placeholder: a full Git commit SHA
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Sanitized environment
+      description: OS, architecture, Go version, and relevant dry-run settings. Do not paste an environment dump.
+      placeholder: Windows 11, amd64, Go 1.26.5, IVPN_DRY_RUN=true
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction
+      description: Minimal steps using synthetic data only.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed result
+      description: Include sanitized error codes, not raw remote responses or secrets.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Verification evidence
+      description: List exact commands and sanitized output that support the report.
+    validations:
+      required: true
+  - type: dropdown
+    id: trust_boundary
+    attributes:
+      label: Affected boundary
+      options:
+        - UI or accessibility
+        - Approval or state machine
+        - Authentication or session
+        - Encrypted storage or retention
+        - Egress selection or broker contract
+        - X protocol dry-run module
+        - Nostr protocol dry-run module
+        - Build, CI, or documentation
+        - Unknown
+    validations:
+      required: true

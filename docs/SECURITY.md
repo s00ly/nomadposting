@@ -1,12 +1,67 @@
 # Security Requirements and Operating Policy
 
-This document defines the minimum security posture for iVPN. It is normative for implementation and release. These are requirements, not evidence that a deployment satisfies them. The fuller threat analysis is in [THREAT_MODEL.md](THREAT_MODEL.md).
+This document defines the minimum security posture for NomadPosting. It is normative for implementation and release. These are requirements, not evidence that a deployment satisfies them. The fuller threat analysis is in [THREAT_MODEL.md](THREAT_MODEL.md).
 
 ## Supported use
 
-iVPN supports one operator publishing approved content to one X account through a dedicated France exit and one Nostr identity through rotating, allowlisted VPN countries. It is a source-IP privacy tool, not an anonymity system or an enforcement-evasion tool.
+NomadPosting supports one operator publishing approved content to one X account through a dedicated France exit and one Nostr identity through rotating, allowlisted VPN countries. It is a source-IP privacy tool, not an anonymity system or an enforcement-evasion tool.
 
 The implementation must not support account fleets, third-party accounts, platform limit circumvention, browser automation of X, session-cookie reuse, misleading location claims, or silent network fallback.
+
+## Supported versions and official scope
+
+| Version | Security support | Live status |
+|---|---|---|
+| `main` | Accepted for private vulnerability reports | Dry-run research preview only |
+| Tagged releases | None exist | Unsupported |
+| Forks and third-party deployments | Controlled by their operators | Not official or certified by this project |
+
+This policy governs the `s00ly/nomadposting` repository and artifacts explicitly
+published from it. It does not add a restriction to the AGPL or certify a fork.
+The [name and provenance policy](../BRAND_POLICY.md) describes accurate use of
+project identity.
+
+No live deployment is supported. A report showing that a missing live feature
+is missing is not a vulnerability unless dry-run behavior creates a separate
+security impact. Reports that challenge a release assumption are welcome when
+they follow the research boundaries below.
+
+## Vulnerability reporting and research boundaries
+
+Use [GitHub Private Vulnerability Reporting](https://github.com/s00ly/nomadposting/security/advisories/new)
+for exploitable details. Public issues are appropriate only for
+non-exploitable design questions, threat-model hypotheses, and hardening
+proposals.
+
+This project can authorize research only against its own code and
+maintainer-controlled disposable environments. It does not authorize testing
+against X, Nostr relays, VPN providers, cloud providers, accounts, networks, or
+other third-party systems. Obtain separate permission from each owner.
+
+When testing this project:
+
+- use synthetic data, disposable keys, local fixtures, and test accounts you
+  own;
+- do not access another person's data, credentials, account, or traffic;
+- do not use denial of service, social engineering, persistence, credential
+  harvesting, or automated scanning of public infrastructure;
+- stop when a test could affect availability, disclose data, or leave the
+  disposable environment;
+- retain only the minimum sanitized evidence needed to reproduce the issue and
+  delete sensitive research artifacts after coordination.
+
+There is no bug bounty, guaranteed safe harbor, or response-time SLA. The
+maintainer targets acknowledgement within seven calendar days and an initial
+severity assessment within fourteen. These are best-effort targets. Reporter
+credit is offered only with the reporter's consent.
+
+For security-sensitive fixes, use a GitHub draft advisory and its private fork.
+Do not open a public issue or pull request containing exploit details before
+coordinated disclosure. The maintainer decides whether an advisory or CVE is
+appropriate based on affected users and release state. Under the AGPL, source
+for a modified network-served fix must be available to remote users no later
+than deployment of that fix. Corresponding source never includes production
+credentials or private operational configuration.
 
 ## Mandatory architecture
 
@@ -161,6 +216,23 @@ On suspected token, signer, or VPN-key compromise:
 7. Rerun all three adversarial rounds before restoring unattended operation.
 
 Do not place real secrets or exploitable details in a public issue. Use [GitHub Private Vulnerability Reporting](https://github.com/s00ly/nomadposting/security/advisories/new) and share only the minimum redacted reproduction material needed to investigate. No production release exists; reports against `main` are accepted. Public issues are appropriate for non-exploitable design questions and hardening proposals.
+
+## Security-maintainer authority
+
+The active security maintainer is listed in
+[MAINTAINERS.md](../MAINTAINERS.md). The project currently has one security
+maintainer, which is an explicit bus-factor limitation.
+
+The security maintainer may access private advisories, invite a minimum set of
+qualified reviewers, merge embargoed fixes, stop publication, revoke
+compromised artifacts, coordinate disclosure, and require credential rotation.
+Any medium-or-higher finding resets the affected verification work and all
+three production adversarial rounds. No administrator may waive that reset by
+merging, changing a label, or editing the verification record.
+
+Code of Conduct reports use the separate private channel defined in
+[CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md). Vulnerability reporting must not be used for
+interpersonal or community-moderation complaints.
 
 ## Release gates
 

@@ -1,6 +1,6 @@
 # Verification Record
 
-Date: 2026-07-15
+Date: 2026-07-16
 
 This record separates code-level evidence from production network evidence. The
 repository is a dry-run control plane and safety scaffold. It is not a working
@@ -12,7 +12,8 @@ VPN cross-poster, and live mode is deliberately rejected at configuration load.
 |---|---|---|
 | Go version | PASS | Pinned Go 1.26.5 toolchain used for every command below. |
 | Project license | PASS | `LICENSE` matches the canonical GNU AGPL v3 text; the README applies `AGPL-3.0-or-later`. `DCO` matches the canonical DCO 1.1 text. Both comparisons normalized line endings only. |
-| DCO enforcement | PASS | `scripts/check-dco.sh` accepted signed author and co-author fixtures, and rejected an unsigned author, unsigned co-author, and empty commit range. The pinned pull-request workflow runs this check. |
+| DCO enforcement | PASS | `scripts/check-dco-tests.sh` accepted signed author and co-author fixtures; rejected unsigned authors, unsigned co-authors, unsigned post-adoption commits, and an empty range; and proved that commits predating DCO adoption are not retroactively rejected. The real branch range also passed from the DCO adoption boundary. Both pinned workflows run the self-tests. |
+| Community governance | PASS LOCALLY | Relative Markdown links resolve. Governance, maintainer, conduct, brand, contribution, ownership, issue-form, pull-request, and security-reporting policies are present and agree on the single-maintainer and dry-run boundaries. Remote GitHub detection and workflow evidence are required after push. |
 | Dependency licenses | PASS | `bash ./scripts/check-licenses.sh` accepted only AGPL-3.0, Apache-2.0, BSD-2-Clause, BSD-3-Clause, and MIT with no ignored modules or exceptions. See [DEPENDENCY_LICENSES.md](DEPENDENCY_LICENSES.md). |
 | Formatting | PASS | `gofmt -d cmd internal` returned no diff. |
 | Module integrity | PASS | `go mod verify` returned `all modules verified`. |

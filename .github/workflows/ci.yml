@@ -26,6 +26,9 @@ jobs:
       - name: Verify module checksums
         run: go mod verify
 
+      - name: Test DCO enforcement
+        run: bash ./scripts/check-dco-tests.sh
+
       - name: Check dependency licenses
         timeout-minutes: 5
         run: bash ./scripts/check-licenses.sh
