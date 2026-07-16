@@ -12,7 +12,7 @@ git -C "$fixture" config user.email "author@example.invalid"
 git -C "$fixture" config core.autocrlf false
 
 run_check() {
-  (cd "$fixture" && "$checker" "$@")
+  (cd "$fixture" && bash "$checker" "$@")
 }
 
 printf 'root\n' >"${fixture}/fixture.txt"
